@@ -1,0 +1,46 @@
+plugins {
+    id 'application'
+    id 'java'
+}
+
+group = 'ome.tiles'
+version = '0.1.0'
+
+mainClassName = 'ome.tiles.cli.StoreTiles'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+    jcenter()
+    mavenCentral()
+    maven {
+        url 'https://artifacts.unidata.ucar.edu/content/repositories/unidata-releases/'
+    }
+    maven {
+        url 'http://artifacts.openmicroscopy.org/artifactory/repo/'
+    }
+}
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'minutes'
+}
+
+dependencies {
+    compile group: 'ome', name: 'formats-gpl', version: '5.5.0'
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.8.0'
+    compile 'net.sourceforge.argparse4j:argparse4j:0.7.0'
+    testCompile 'org.testng:testng:6.9.10'
+}
+
+test {
+    useTestNG() {
+        suiteXmlBuilder().suite(name: 'performance') {
+            test (name: 'all-tests') {
+                packages {
+                    'package' (name: 'ome.tiles.*')
+                }
+            }
+        }
+    }
+}
