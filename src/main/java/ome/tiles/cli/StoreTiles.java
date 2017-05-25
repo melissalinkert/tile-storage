@@ -18,7 +18,6 @@
 package ome.tiles.cli;
 
 import java.io.IOException;
-import java.util.UUID;
 
 import loci.formats.ChannelSeparator;
 import loci.formats.FormatException;
@@ -58,7 +57,6 @@ public class StoreTiles {
       reader.setId(inputFile);
 
       Metadata metadata = new Metadata(true);
-      metadata.setUUID(UUID.randomUUID().toString());
       metadata.setTileWidth(TILE_SIZE);
       metadata.setTileHeight(TILE_SIZE);
       Projection projection = new Projection();
@@ -104,6 +102,7 @@ public class StoreTiles {
       }
 
       reader.close();
+      System.out.println("output directory: " + destination + "/" + metadata.getUUID());
     }
     catch (FormatException e) {
     }

@@ -19,6 +19,7 @@ package ome.tiles.metadata;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Container for the minimal metadata required to interpret tiles.
@@ -40,6 +41,9 @@ public class Metadata {
 
   public Metadata(boolean writeable) {
     canWrite = writeable;
+    if (canWrite) {
+      uuid = UUID.randomUUID().toString();
+    }
   }
 
   public String getUUID() {
