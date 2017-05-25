@@ -62,6 +62,10 @@ public class Metadata {
     return projections;
   }
 
+  public Projection getProjection(int index) {
+    return getProjections().get(index);
+  }
+
   public void setUUID(String uuid) {
     if (canWrite) {
       this.uuid = uuid;

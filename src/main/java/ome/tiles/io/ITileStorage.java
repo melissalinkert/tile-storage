@@ -15,20 +15,16 @@
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  */
+
 package ome.tiles.io;
 
 import java.io.IOException;
+import ome.tiles.metadata.TileKey;
 
-public interface IStorageService {
+public interface ITileStorage {
 
-  String getDestination();
+  byte[] readTile(TileKey key) throws IOException;
 
-  void writeString(String path, String data) throws IOException;
-
-  void writeBytes(String path, byte[] data) throws IOException;
-
-  String readString(String path) throws IOException;
-
-  byte[] readBytes(String path) throws IOException;
+  void storeTile(TileKey key, byte[] tileBuffer) throws IOException;
 
 }

@@ -25,41 +25,57 @@ import loci.common.RandomAccessOutputStream;
 
 public class FilesystemStorageService implements IStorageService {
 
+  private String destination;
+
+  public FilesystemStorageService(String destination) {
+    this.destination = destination;
+  }
+
+  @Override
+  public String getDestination() {
+    return destination;
+  }
+
   @Override
   public void writeString(String path, String data) throws IOException {
-    mkparent(path);
-    RandomAccessOutputStream out = new RandomAccessOutputStream(path);
+    String filename = getAbsolutePath(path);
+    mkparent(filename);
+    RandomAccessOutputStream out = new RandomAccessOutputStream(filename);
     out.writeBytes(data);
     out.close();
   }
 
   @Override
   public void writeBytes(String path, byte[] data) throws IOException {
-    mkparent(path);
-    RandomAccessOutputStream out = new RandomAccessOutputStream(path);
+    String filename = getAbsolutePath(path);
+    mkparent(filename);
+    RandomAccessOutputStream out = new RandomAccessOutputStream(filename);
     out.write(data);
     out.close();
   }
 
   @Override
   public String readString(String path) throws IOException {
-    return DataTools.readFile(path);
+    return DataTools.readFile(getAbsolutePath(path));
   }
 
   @Override
   public byte[] readBytes(String path) throws IOException {
-    RandomAccessInputStream s = new RandomAccessInputStream(path);
+    RandomAccessInputStream s = new RandomAccessInputStream(getAbsolutePath(path));
     byte[] b = new byte[(int) s.length()];
     s.readFully(b);
     s.close();
     return b;
   }
 
+  private String getAbsolutePath(String path) {
+    File f = new File(getDestination());
+    return f.getAbsolutePath() + File.separator + path;
+  }
+
   private void mkparent(String path) {
     File parent = new File(path).getParentFile();
-    if (!parent.exists()) {
-      parent.mkdir();
-    }
+    parent.mkdirs();
   }
 
 }

@@ -27,6 +27,6 @@ public interface IMetadataStorage {
 
   Metadata load(String readPath) throws IOException;
 
-  void save(Metadata metadata, String writePath) throws IOException;
+  void save(Metadata metadata) throws IOException;
 
 }

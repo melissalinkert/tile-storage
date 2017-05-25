@@ -34,8 +34,11 @@ import ome.tiles.metadata.JSONMetadataStorage;
 import ome.tiles.metadata.Metadata;
 import ome.tiles.metadata.Projection;
 import ome.tiles.metadata.ProjectionType;
+import ome.tiles.metadata.TileKey;
+import ome.tiles.io.DiskTileStorage;
 import ome.tiles.io.FilesystemStorageService;
-
+import ome.tiles.io.IStorageService;
+import ome.tiles.io.ITileStorage;
 
 public class StoreTiles {
 
@@ -68,14 +71,16 @@ public class StoreTiles {
       projection.setResolutionCount(reader.getResolutionCount());
       metadata.addProjection(projection);
 
+      IStorageService fs = new FilesystemStorageService(destination);
       IMetadataStorage metadataStorage = new JSONMetadataStorage();
-      metadataStorage.setStorageService(new FilesystemStorageService());
-      metadataStorage.save(metadata, destination);
+      metadataStorage.setStorageService(fs);
+      metadataStorage.save(metadata);
 
-      //ITileStorage tileStorage = new DiskTileStorage();
+      ITileStorage tileStorage = new DiskTileStorage(fs);
 
       byte[] tileBuffer = new byte[FormatTools.getPlaneSize(reader, TILE_SIZE, TILE_SIZE)];
       // only supports first pyramid for now
+      boolean performDownsampling = reader.getResolutionCount() == 1;
       for (int res=0; res<reader.getResolutionCount(); res++) {
         reader.setResolution(res);
         for (int no=0; no<reader.getImageCount(); no++) {
@@ -85,17 +90,15 @@ public class StoreTiles {
               int width = (int) Math.min(TILE_SIZE, reader.getSizeX() - x);
               reader.openBytes(no, tileBuffer, x, y, width, height);
 
-              /*
-              TileKey key = new TileKey(metadata);
-              key.setPyramid(0);
-              key.setResolution(0);
+              TileKey key = new TileKey(metadata, 0);
+              key.setResolution(res);
               key.setPlane(no);
-              key.setProjection(TileProjection.XY);
               key.setHorizontalCoordinate(x);
               key.setVerticalCoordinate(y);
-              // this should perform any necessary downsampling?
               tileStorage.storeTile(key, tileBuffer);
-              */
+              if (performDownsampling) {
+                // TODO
+              }
             }
           }
         }
@@ -105,8 +108,10 @@ public class StoreTiles {
       System.out.println("output directory: " + destination + "/" + metadata.getUUID());
     }
     catch (FormatException e) {
+      e.printStackTrace();
     }
     catch (IOException e) {
+      e.printStackTrace();
     }
   }
 

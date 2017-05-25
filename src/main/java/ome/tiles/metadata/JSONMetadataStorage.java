@@ -35,11 +35,11 @@ public class JSONMetadataStorage implements IMetadataStorage {
   }
 
   @Override
-  public void save(Metadata metadata, String writePath) throws IOException {
+  public void save(Metadata metadata) throws IOException {
     Gson gson = new Gson();
     String json = gson.toJson(metadata);
     if (storage != null) {
-      storage.writeString(writePath + "/" + metadata.getUUID() + "/metadata", json);
+      storage.writeString(metadata.getUUID() + "/metadata", json);
     }
   }
 
