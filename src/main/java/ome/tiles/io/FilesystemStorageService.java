@@ -19,8 +19,10 @@ package ome.tiles.io;
 
 import java.io.File;
 import java.io.IOException;
-import loci.common.DataTools;
-import loci.common.RandomAccessInputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import loci.common.Constants;
 import loci.common.RandomAccessOutputStream;
 
 public class FilesystemStorageService implements IStorageService {
@@ -56,16 +58,14 @@ public class FilesystemStorageService implements IStorageService {
 
   @Override
   public String readString(String path) throws IOException {
-    return DataTools.readFile(getAbsolutePath(path));
+    byte[] bytes = readBytes(path);
+    return new String(bytes, Constants.ENCODING);
   }
 
   @Override
   public byte[] readBytes(String path) throws IOException {
-    RandomAccessInputStream s = new RandomAccessInputStream(getAbsolutePath(path));
-    byte[] b = new byte[(int) s.length()];
-    s.readFully(b);
-    s.close();
-    return b;
+    Path p = Paths.get(getAbsolutePath(path));
+    return Files.readAllBytes(p);
   }
 
   private String getAbsolutePath(String path) {
