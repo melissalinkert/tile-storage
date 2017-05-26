@@ -23,7 +23,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import loci.common.Constants;
-import loci.common.RandomAccessOutputStream;
 
 public class FilesystemStorageService implements IStorageService {
 
@@ -40,20 +39,15 @@ public class FilesystemStorageService implements IStorageService {
 
   @Override
   public void writeString(String path, String data) throws IOException {
-    String filename = getAbsolutePath(path);
-    mkparent(filename);
-    RandomAccessOutputStream out = new RandomAccessOutputStream(filename);
-    out.writeBytes(data);
-    out.close();
+    writeBytes(path, data.getBytes(Constants.ENCODING));
   }
 
   @Override
   public void writeBytes(String path, byte[] data) throws IOException {
     String filename = getAbsolutePath(path);
     mkparent(filename);
-    RandomAccessOutputStream out = new RandomAccessOutputStream(filename);
-    out.write(data);
-    out.close();
+    Path p = Paths.get(filename);
+    Files.write(p, data);
   }
 
   @Override
