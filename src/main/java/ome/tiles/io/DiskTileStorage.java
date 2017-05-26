@@ -22,9 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import ome.tiles.metadata.TileKey;
 
-public class DiskTileStorage implements ITileStorage {
-
-  private IStorageService service;
+public class DiskTileStorage extends AbstractTileStorage {
 
   public DiskTileStorage(IStorageService service) {
     this.service = service;
@@ -32,19 +30,22 @@ public class DiskTileStorage implements ITileStorage {
 
   @Override
   public byte[] readTile(TileKey key) throws IOException {
-    String tileFile = getTileFile(key);
+    String tileFile = getTileFile(key, false);
     return service.readBytes(tileFile);
   }
 
   @Override
   public void storeTile(TileKey key, byte[] tileBuffer) throws IOException {
-    String tileFile = getTileFile(key);
+    String tileFile = getTileFile(key, true);
     service.writeBytes(tileFile, tileBuffer);
   }
 
-  private String getTileFile(TileKey key) {
-    StringBuffer buf = new StringBuffer(key.getMetadata().getUUID());
-    buf.append(File.separator);
+  private String getTileFile(TileKey key, boolean includeUUID) {
+    StringBuffer buf = new StringBuffer();
+    if (includeUUID) {
+      buf.append(key.getMetadata().getUUID());
+      buf.append(File.separator);
+    }
     buf.append(key.getProjectionType().toString().toLowerCase());
     buf.append(File.separator);
     buf.append(key.getResolution());

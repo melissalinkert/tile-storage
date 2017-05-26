@@ -25,7 +25,7 @@ public interface IMetadataStorage {
 
   void setStorageService(IStorageService storage);
 
-  Metadata load(String readPath) throws IOException;
+  Metadata load() throws IOException;
 
   void save(Metadata metadata) throws IOException;
 

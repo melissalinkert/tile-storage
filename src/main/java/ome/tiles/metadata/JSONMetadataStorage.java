@@ -18,6 +18,7 @@
 package ome.tiles.metadata;
 
 import com.google.gson.Gson;
+import java.io.File;
 import java.io.IOException;
 import ome.tiles.io.IStorageService;
 
@@ -26,6 +27,8 @@ import ome.tiles.io.IStorageService;
  * deserializes from JSON.
  */
 public class JSONMetadataStorage implements IMetadataStorage {
+
+  private static final String RELATIVE_PATH = "metadata";
 
   private IStorageService storage;
 
@@ -39,13 +42,13 @@ public class JSONMetadataStorage implements IMetadataStorage {
     Gson gson = new Gson();
     String json = gson.toJson(metadata);
     if (storage != null) {
-      storage.writeString(metadata.getUUID() + "/metadata", json);
+      storage.writeString(metadata.getUUID() + File.separator + RELATIVE_PATH, json);
     }
   }
 
   @Override
-  public Metadata load(String readPath) throws IOException {
-    String json = storage.readString(readPath);
+  public Metadata load() throws IOException {
+    String json = storage.readString(RELATIVE_PATH);
     Gson gson = new Gson();
     return gson.fromJson(json, Metadata.class);
   }

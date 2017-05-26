@@ -26,10 +26,14 @@ public class TileKey {
   private int plane;
   private int horizontalCoordinate;
   private int verticalCoordinate;
+  private int width;
+  private int height;
 
   public TileKey(Metadata metadata, int projectionIndex) {
     this.metadata = metadata;
     projection = projectionIndex;
+    width = this.metadata.getTileWidth();
+    height = this.metadata.getTileHeight();
   }
 
   public void setResolution(int resolution) {
@@ -46,6 +50,14 @@ public class TileKey {
 
   public void setVerticalCoordinate(int coordinate) {
     verticalCoordinate = coordinate;
+  }
+
+  public void setTileWidth(int width) {
+    this.width = width;
+  }
+
+  public void setTileHeight(int height) {
+    this.height = height;
   }
 
   public Metadata getMetadata() {
@@ -72,6 +84,12 @@ public class TileKey {
     return verticalCoordinate;
   }
 
+  public int getTileWidth() {
+    return width;
+  }
 
+  public int getTileHeight() {
+    return height;
+  }
 
 }
