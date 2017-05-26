@@ -25,6 +25,7 @@ public class Projection {
   private int verticalTiles;
   private int planes;
   private int resolutions;
+  private double scaleFactor;
   private boolean compressed;
 
   public ProjectionType getType() {
@@ -45,6 +46,10 @@ public class Projection {
 
   public int getResolutionCount() {
     return resolutions;
+  }
+
+  public double getPyramidScaleFactor() {
+    return scaleFactor;
   }
 
   public boolean isCompressed() {
@@ -69,6 +74,10 @@ public class Projection {
 
   public void setResolutionCount(int resolutions) {
     this.resolutions = resolutions;
+  }
+
+  public void setPyramidScaleFactor(double scale) {
+    scaleFactor = scale;
   }
 
   public void setCompressed(boolean compressed) {
