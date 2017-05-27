@@ -1,0 +1,6 @@
+- test-results directory contains baseline timings for uncompressed disk storage
+- Arbitrary tile reading does not work; tiles read must match tiles stored on disk
+- Pixel type and endianness assumed to be supplied externally
+- Compression not yet supported
+- Pyramid resolution calculation not implemented, so best to test with files that contain a pre-calculated pyramid
+- Scale factor in ome.tiles.metadata.Metadata not used
