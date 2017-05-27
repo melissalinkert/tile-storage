@@ -57,7 +57,9 @@ public class StoreTiles {
     IFormatReader reader = new ChannelSeparator();
     reader.setFlattenedResolutions(false);
     try {
+      long t0 = System.currentTimeMillis();
       reader.setId(inputFile);
+      long t1 = System.currentTimeMillis();
 
       Metadata metadata = new Metadata(true);
       metadata.setTileWidth(TILE_SIZE);
@@ -79,6 +81,9 @@ public class StoreTiles {
       ITileStorage tileStorage = new DiskTileStorage(fs);
 
       byte[] tileBuffer = new byte[FormatTools.getPlaneSize(reader, TILE_SIZE, TILE_SIZE)];
+      long t2 = System.currentTimeMillis();
+      System.out.println("setId took " + (t1 - t0) + " ms");
+      System.out.println("tile storage setup took " + (t2 - t1) + " ms");
       // only supports first pyramid for now
       boolean performDownsampling = reader.getResolutionCount() == 1;
       for (int res=0; res<reader.getResolutionCount(); res++) {
@@ -88,7 +93,9 @@ public class StoreTiles {
             int height = (int) Math.min(TILE_SIZE, reader.getSizeY() - y);
             for (int x=0; x<reader.getSizeX(); x+=TILE_SIZE) {
               int width = (int) Math.min(TILE_SIZE, reader.getSizeX() - x);
+              long t3 = System.currentTimeMillis();
               reader.openBytes(no, tileBuffer, x, y, width, height);
+              long t4 = System.currentTimeMillis();
 
               TileKey key = new TileKey(metadata, 0);
               key.setResolution(res);
@@ -96,6 +103,9 @@ public class StoreTiles {
               key.setHorizontalCoordinate(x);
               key.setVerticalCoordinate(y);
               tileStorage.storeTile(key, tileBuffer);
+              long t5 = System.currentTimeMillis();
+              System.out.println("  tile (" + x + ", " + y + ") openbytes took " + (t4 - t3) + " ms");
+              System.out.println("  tile (" + x + ", " + y + ") storage took " + (t5 - t4) + " ms");
               if (performDownsampling) {
                 // TODO
               }
